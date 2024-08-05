@@ -1,0 +1,45 @@
+name: Template IaC
+
+on:
+  workflow_call:
+    inputs:
+      LOCATION:
+        required: true
+        type: string
+      TEMPLATE_FILE:
+        required: true
+        type: string
+      PARAMETERS_FILE:
+        required: true
+        type: string
+      KIND:
+          required: true
+          type: string
+        
+jobs:
+  what-if-deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Azure Bicep What-If Deployment
+      run: |
+        BICEP_DATA = $(az deployment sub ${{ inputs.KIND }} --name CSU_GH_ADOPTION --location ${{ inputs.LOCATION }} --template-file ${{ inputs.TEMPLATE_FILE }} --parameters ${{ inputs.PARAMETERS_FILE }})
+
+        delimiter="$(openssl rand -hex 8)"
+        echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
+        echo "## Bicep What-If Output" >> $GITHUB_OUTPUT
+        echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        echo '```terraform' >> $GITHUB_OUTPUT
+        echo "$BICEP_DATA" >> $GITHUB_OUTPUT
+        echo '```' >> $GITHUB_OUTPUT
+        echo "</details>" >> $GITHUB_OUTPUT
+        echo "${delimiter}" >> $GITHUB_OUTPUT        

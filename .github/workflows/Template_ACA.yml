@@ -1,0 +1,51 @@
+name: Template ACA
+
+on:
+  workflow_call:
+    inputs:
+      AZURE_CONTAINER_REGISTRY:
+        required: true
+        type: string
+      CONTAINER_NAME:
+        required: true
+        type: string
+      DOCKER_PATH:
+        required: true
+        type: string
+      RESOURCE_GROUP:
+        required: true
+        type: string
+      DOCKER_BUILD_CONTEXT:
+        required: true
+        type: string
+
+       
+jobs:
+  buildImage:
+   runs-on: ubuntu-latest
+   steps:
+      - uses: actions/checkout@v4
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+         creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # Builds and pushes an image up to your Azure Container Registry
+      - name: Build and push image to ACR
+        run: |
+          az acr build --image ${{ inputs.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ inputs.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ inputs.AZURE_CONTAINER_REGISTRY }} -g ${{ inputs.RESOURCE_GROUP }} -f ${{ inputs.DOCKER_PATH }} ${{ inputs.DOCKER_BUILD_CONTEXT }}
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [buildImage]
+    steps:
+      # Logs in with your Azure credentials
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+         creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Deploy Container Apps
+        uses: azure/CLI@v1
+        with:
+          inlineScript: >
+            az containerapp registry set -n ${{ inputs.CONTAINER_NAME }} -g ${{ inputs.RESOURCE_GROUP }} --server ${{ inputs.AZURE_CONTAINER_REGISTRY }}.azurecr.io
+            
+            az containerapp update -n ${{ inputs.CONTAINER_NAME }} -g ${{ inputs.RESOURCE_GROUP }} -i ${{ inputs.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ inputs.CONTAINER_NAME }}:${{ github.sha }}

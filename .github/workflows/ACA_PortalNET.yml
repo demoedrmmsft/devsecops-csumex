@@ -1,0 +1,18 @@
+name: ACA PORTAL NET
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - src/Store/**
+jobs:
+  Build-Publish-ACA:
+    uses: ./.github/workflows/Template_ACA.yml
+    with:
+      AZURE_CONTAINER_REGISTRY: acrcsughadoption
+      CONTAINER_NAME: portal-net
+      DOCKER_PATH: ./src/Store/Dockerfile
+      DOCKER_BUILD_CONTEXT: ./src/Store
+      RESOURCE_GROUP: csughadoption-rg
+    secrets: inherit

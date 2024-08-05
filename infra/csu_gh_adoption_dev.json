@@ -1,0 +1,88 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "tokenReplacements": {
+        "value": [
+          {
+            "oldString": "__ENV__",
+            "newString": "DEV"
+          },
+          {
+            "oldString": "__LOC__",
+            "newString": "MEX"
+          }
+        ]
+      },
+      "tags": {
+        "value": {
+          "loc": "MEX",
+          "env": "DEV",
+          "owner": "CSU",
+          "project": "GHADOPTION"
+        }
+      },
+      "resourceGr": {
+        "value": {
+          "name":"__LOC__-CSU-__ENV__-GHADOP-RGP"
+        }
+      },
+      "containerRegistry": {
+        "value": 
+          {
+            "name": "__LOC__CSU__ENV__GHADOPACR",
+            "acrSku": "Standard"
+          }
+      },
+      "workspace": {
+        "value": 
+          {
+            "name": "__LOC__CSU__ENV__-GHADOP-LAW"
+          }
+      },
+      "identity": {
+        "value": 
+          {
+            "name": "__LOC__CSU__ENV__-GHADOP-IDENTITY",
+            "assigmentName":"__LOC__CSU__ENV__-GHADOP-ASSIGNET",
+            "principalType":"ServicePrincipal",
+            "roleDefinitionIdOrName":"7f951dda-4ed3-4680-a7ca-43fe172d538d"
+          }
+      },
+      "containerApps": {
+        "value": [
+            {
+                "name": "portal-net",
+                "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+                "cpu": "1",
+                "memory": "0.5Gi",
+                "ingressExternal": true,
+                "targetPort": 8080,
+                "disableIngress": false,
+                "ingressTransport": "http"
+            },
+            {
+                "name": "inventory-java-api",
+                "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+                "cpu": "1",
+                "memory": "0.5Gi",
+                "ingressExternal": true,
+                "targetPort": 8080,
+                "disableIngress": false,
+                "ingressTransport": "http"
+            },
+            {
+                "name": "product-python-api",
+                "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+                "cpu": "1",
+                "memory": "0.5Gi",
+                "ingressExternal": true,
+                "targetPort": 8080,
+                "disableIngress": false,
+                "ingressTransport": "http"
+            }
+        ]
+      }
+      
+    }
+}

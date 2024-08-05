@@ -1,0 +1,16 @@
+name: PROD IAC VALIDATION
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - infra/**
+jobs:
+
+  Deploy_Baseline:
+    uses: ./.github/workflows/Tempate_Bicep_IaC.yml
+    with:
+        LOCATION: 'mexicocentral'
+        TEMPLATE_FILE: './infra/csu_ghe_adoption_main.bicep'
+        PARAMETERS_FILE: './infra/csu_gh_adoption_prod.json'
+        KIND: 'what-if'
+    secrets: inherit
