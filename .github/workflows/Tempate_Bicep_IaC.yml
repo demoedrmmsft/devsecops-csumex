@@ -30,6 +30,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Azure Bicep Deployment
+      id: bicep-deployment
       run: |
         BICEP_DATA=$(az deployment sub ${{ inputs.KIND }} --name CSU_GH_ADOPTION --location ${{ inputs.LOCATION }} --template-file ${{ inputs.TEMPLATE_FILE }} --parameters ${{ inputs.PARAMETERS_FILE }})
 
@@ -43,3 +44,9 @@ jobs:
         echo '```' >> $GITHUB_OUTPUT
         echo "</details>" >> $GITHUB_OUTPUT
         echo "${delimiter}" >> $GITHUB_OUTPUT        
+
+    - name: Publish Bicep Output
+      env:
+          SUMMARY: ${{ steps.bicep-deployment.outputs.summary }}
+      run: |
+        echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
