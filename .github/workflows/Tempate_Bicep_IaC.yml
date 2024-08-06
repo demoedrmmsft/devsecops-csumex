@@ -29,13 +29,14 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Azure Bicep What-If Deployment
+    - name: Azure Bicep Deployment
+      id: bicep-deployment
       run: |
-        BICEP_DATA = $(az deployment sub ${{ inputs.KIND }} --name CSU_GH_ADOPTION --location ${{ inputs.LOCATION }} --template-file ${{ inputs.TEMPLATE_FILE }} --parameters ${{ inputs.PARAMETERS_FILE }})
+        BICEP_DATA=$(az deployment sub ${{ inputs.KIND }} --name CSU_GH_ADOPTION --location ${{ inputs.LOCATION }} --template-file ${{ inputs.TEMPLATE_FILE }} --parameters ${{ inputs.PARAMETERS_FILE }})
 
         delimiter="$(openssl rand -hex 8)"
         echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
-        echo "## Bicep What-If Output" >> $GITHUB_OUTPUT
+        echo "## Bicep ${{ inputs.KIND }} Output" >> $GITHUB_OUTPUT
         echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
         echo "" >> $GITHUB_OUTPUT
         echo '```terraform' >> $GITHUB_OUTPUT
@@ -43,3 +44,9 @@ jobs:
         echo '```' >> $GITHUB_OUTPUT
         echo "</details>" >> $GITHUB_OUTPUT
         echo "${delimiter}" >> $GITHUB_OUTPUT        
+
+    - name: Publish Bicep Output
+      env:
+          SUMMARY: ${{ steps.bicep-deployment.outputs.summary }}
+      run: |
+        echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY

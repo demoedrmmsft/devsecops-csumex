@@ -10,13 +10,13 @@
           },
           {
             "oldString": "__LOC__",
-            "newString": "MEX"
+            "newString": "CUS"
           }
         ]
       },
       "tags": {
         "value": {
-          "loc": "MEX",
+          "loc": "Central US",
           "env": "DEV",
           "owner": "CSU",
           "project": "GHADOPTION"
@@ -38,6 +38,12 @@
         "value": 
           {
             "name": "__LOC__CSU__ENV__-GHADOP-LAW"
+          }
+      },
+      "environment": {
+        "value": 
+          {
+            "name": "__LOC__CSU__ENV__-GHADOP-ENV"
           }
       },
       "identity": {

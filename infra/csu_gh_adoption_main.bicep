@@ -21,7 +21,7 @@ param tags object
 
 param containerApps array
 
-
+///Create First Pull Request
 
 //////////////////////////////////////////////////////////// TOKEN REPLACEMENTS ////////////////////////////////////////////////////////////
 
@@ -64,7 +64,7 @@ module module_workspace 'br/public:avm/res/operational-insights/workspace:0.4.1'
   name: 'pid-ws-${replaceAll(workspace.name, tokenReplacements, false)}-${uniqueString(deployment().name)}'
   scope: resourceGroup(resourceGrName)
   params: {
-    name: workspace.name
+    name: replaceAll(workspace.name, tokenReplacements, false)
     location:location
     tags: tags
   }
