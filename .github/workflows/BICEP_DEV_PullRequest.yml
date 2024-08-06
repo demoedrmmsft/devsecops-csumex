@@ -9,7 +9,7 @@ jobs:
   Deploy_Baseline:
     uses: ./.github/workflows/Tempate_Bicep_IaC.yml
     with:
-        LOCATION: 'mexicocentral'
+        LOCATION: 'centralus'
         TEMPLATE_FILE: 'infra/csu_gh_adoption_main.bicep'
         PARAMETERS_FILE: 'infra/csu_gh_adoption_dev.json'
         KIND: 'what-if'
