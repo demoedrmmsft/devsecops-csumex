@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddHttpClient("Products", (httpClient) => httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ProductsApi")));
+builder.Services.AddHttpClient("products", (httpClient) => httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ProductsApi")));
 builder.Services.AddHttpClient("Inventory", (httpClient) => httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("InventoryApi")));
 builder.Services.AddScoped<IStoreBackendClient, StoreBackendClient>();
 builder.Services.AddMemoryCache();
@@ -35,7 +35,7 @@ public class Product
 
 public interface IStoreBackendClient
 {
-    [Get("/products")]
+    [Get("/products/")]
     Task<List<Product>> GetProducts();
 
     [Get("/inventory/{productId}")]
@@ -59,7 +59,7 @@ public class StoreBackendClient : IStoreBackendClient
 
     public async Task<List<Product>> GetProducts()
     {
-        var client = _httpClientFactory.CreateClient("Products");
+        var client = _httpClientFactory.CreateClient("products");
         return await RestService.For<IStoreBackendClient>(client).GetProducts();
     }
 }
